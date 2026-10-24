@@ -1,0 +1,11 @@
+[Unit]
+Description=MarketLoop database and PDF backup
+
+[Service]
+Type=oneshot
+User=marketloop
+Group=marketloop
+EnvironmentFile=/etc/marketloop/marketloop.env
+WorkingDirectory=/opt/marketloop
+ExecStart=/usr/bin/node /opt/marketloop/backup.mjs create /var/lib/marketloop /var/backups/marketloop
+UMask=0077

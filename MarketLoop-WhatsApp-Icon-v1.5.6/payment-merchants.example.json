@@ -1,0 +1,9 @@
+{
+  "STORE_OWNER_ID": {
+    "enabled": false,
+    "mode": "test",
+    "allowLive": false,
+    "test": {"keyId": "rzp_test_REPLACE", "keySecret": "REPLACE", "webhookSecret": "REPLACE", "previousWebhookSecrets": []},
+    "live": {"keyId": "rzp_live_REPLACE", "keySecret": "REPLACE", "webhookSecret": "REPLACE", "previousWebhookSecrets": []}
+  }
+}

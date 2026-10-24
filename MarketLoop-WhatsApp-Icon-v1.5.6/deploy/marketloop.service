@@ -1,0 +1,26 @@
+[Unit]
+Description=MarketLoop supermarket CRM
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=marketloop
+Group=marketloop
+WorkingDirectory=/opt/marketloop
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/marketloop/marketloop.env
+ExecStartPre=/usr/bin/node /opt/marketloop/doctor.mjs
+ExecStart=/usr/bin/node /opt/marketloop/server.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=90
+KillSignal=SIGTERM
+KillMode=control-group
+UMask=0077
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/marketloop /var/backups/marketloop
+
+[Install]
+WantedBy=multi-user.target

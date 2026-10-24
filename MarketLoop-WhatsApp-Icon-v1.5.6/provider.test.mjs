@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {cataloguePdf} from './catalogue.mjs';
+test('installed PDF dependency generates a real multipage catalogue',async()=>{const products=Array.from({length:85},(_,i)=>({id:String(i),name:'Rice product '+i,brand:'MarketLoop',unit:'1 kg',price:90+i,stock:2}));const pdf=await cataloguePdf({settings:{name:'Integration Supermarket',address:'Test address',timezone:'Asia/Kolkata'},products},'Release catalogue');assert.equal(pdf.subarray(0,5).toString(),'%PDF-');assert.ok(pdf.length>1000);assert.ok((pdf.toString('latin1').match(/\/Type \/Page\b/g)||[]).length>1);await assert.rejects(cataloguePdf({settings:{},products:[]}),/available products/)});
+test('installed QR dependency renders a PNG QR without connecting an account',async()=>{const QR=(await import('qrcode')).default;const uri=await QR.toDataURL('marketloop-release-smoke-test',{width:280});assert.ok(uri.startsWith('data:image/png;base64,'));assert.equal(Buffer.from(uri.split(',')[1],'base64').subarray(0,8).toString('hex'),'89504e470d0a1a0a')});
+test('installed linked-device library exposes client and persistent authentication',async()=>{const mod=await import('whatsapp-web.js'),w=mod.default||mod;assert.equal(typeof w.Client,'function');assert.equal(typeof w.LocalAuth,'function')});

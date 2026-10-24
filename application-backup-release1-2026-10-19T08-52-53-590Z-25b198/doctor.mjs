@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {validateRuntime} from './runtime.mjs';
+let failures=0;
+const check=(name,fn)=>{try{const result=fn();console.log('PASS '+name+(result?' — '+result:''))}catch(e){failures++;console.error('FAIL '+name+' — '+e.message)}};
+check('Runtime configuration',()=>validateRuntime());
+for(const name of ['pdfkit','qrcode','whatsapp-web.js'])check('Dependency '+name,()=>import.meta.resolve(name)&&'available');
+check('Data directory',()=>{const dir=path.resolve(process.env.DATA_DIR||'data');fs.mkdirSync(dir,{recursive:true});const file=path.join(dir,'.write-probe-'+process.pid);fs.writeFileSync(file,'probe',{flag:'wx',mode:0o600});fs.unlinkSync(file);return 'writable'});
+if(process.env.CHROME_EXECUTABLE_PATH)check('Configured Chrome',()=>{if(!fs.existsSync(process.env.CHROME_EXECUTABLE_PATH))throw Error('Executable not found');return 'path exists; QR launch still needs testing'});
+if(process.env.PAYMENTS_ENABLED==='true')check('Merchant configuration',()=>{if(!process.env.RAZORPAY_MERCHANTS_FILE&&!process.env.RAZORPAY_MERCHANTS_JSON)throw Error('Merchant configuration is missing');const map=JSON.parse(process.env.RAZORPAY_MERCHANTS_FILE?fs.readFileSync(process.env.RAZORPAY_MERCHANTS_FILE,'utf8'):process.env.RAZORPAY_MERCHANTS_JSON);if(!Object.keys(map).length)throw Error('No store profiles configured');return 'JSON readable; each merchant still needs provider verification'});
+console.log('This checks local readiness only. It does not contact providers or prove live payment/WhatsApp delivery.');process.exitCode=failures?1:0;

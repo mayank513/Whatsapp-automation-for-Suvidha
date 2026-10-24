@@ -1,0 +1,5 @@
+# Replace crm.example.com with your real DNS name pointing at this VPS.
+crm.example.com {
+ encode zstd gzip
+ reverse_proxy 127.0.0.1:3080
+}

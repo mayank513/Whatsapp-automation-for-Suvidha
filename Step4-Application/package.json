@@ -1,0 +1,19 @@
+{
+  "name": "marketloop",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "check": "node --check server.mjs && node --check database.mjs && node --check campaigns.mjs && node --check campaign-adapter.mjs && node --check catalogue.mjs && node --check dist/client.js && node --check dist/data-center.js && node --check dist/campaign-step4.js && node --check launch.mjs",
+    "test": "node --test test.mjs migration.test.mjs campaigns.test.mjs ui.test.mjs"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "whatsapp-web.js": "^1.34.7",
+    "pdfkit": "^0.17.2"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
